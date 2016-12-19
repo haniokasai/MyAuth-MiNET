@@ -19,18 +19,6 @@ namespace MyAuth
 
         protected static ILog _log = LogManager.GetLogger("MyAuth");
 
-        private PluginContext _context;
-
-        [DataContract]
-        public class MyPluginConfiguration
-        {
-            [DataMember]
-            public string ip { get; set; }
-
-            [DataMember]
-            public List<string> Rules { get; set; }
-        }
-
         protected override void OnEnable()
         {
 
