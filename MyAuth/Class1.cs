@@ -17,7 +17,7 @@ namespace MyAuth
         Dictionary<string, Boolean> prerg = new Dictionary<string, Boolean>();
         Dictionary<string, int> ct = new Dictionary<string, int>();
 
-        protected static ILog _log = LogManager.GetLogger("MyAuth");
+        public static ILog _log = LogManager.GetLogger("MyAuth");
 
         protected override void OnEnable()
         {
