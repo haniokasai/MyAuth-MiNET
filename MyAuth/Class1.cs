@@ -56,12 +56,6 @@ namespace MyAuth
         {
             Player player = e.Player;
             player.Level.BroadcastMessage("Welcome");
-            player.SetGameMode(MiNET.Worlds.GameMode.Creative);
-            /*var setCmdEnabled = McpeSetCommandsEnabled.CreateObject();
-            setCmdEnabled.enabled = true;
-            player.SendPackage(setCmdEnabled);
-            PluginManager pm = new PluginManager();
-            pm.HandleCommand(null, "help", "default",null);*/
         }
 
 
