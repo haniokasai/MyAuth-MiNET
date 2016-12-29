@@ -1,6 +1,9 @@
 ﻿using log4net;
+using MiNET;
+using MiNET.Net;
 using MiNET.Plugins;
 using MiNET.Plugins.Attributes;
+using MyAuth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +26,7 @@ namespace MyAuth
         {
 
             _log.Warn("Loaded");
-            mysql.load();
+            //mysql.load();
         }
     }
 }

@@ -32,7 +32,7 @@ namespace MyAuth
 
         public static Dictionary<string,string> get(string name)
         {
-            Dictionary<string, string> map = new Dictionary<string, string>;
+            Dictionary<string, string> map = new Dictionary<string, string>();
             try
             {
                 using (MySqlCommand command = con.CreateCommand())
