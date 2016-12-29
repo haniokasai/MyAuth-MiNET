@@ -14,125 +14,127 @@ namespace MyAuth
     {
 
         protected override void OnEnable()
-    {
-        _log.Info("Event Handler");
-    }
-
-    [PacketHandler]
-    public Package onChat(McpeText packet,Player player)
-    {
-        if(!Class1.lged.ContainsKey(player.Username.ToLower())){
-            notlogin(player);
-            return null;
-        }
-        return packet;
-    }
-
-    [PacketHandler]
-    public Package onUseItem(McpeUseItem packet,Player player)
-    {
-        if(!Class1.lged.ContainsKey(player.Username.ToLower())){
-            notlogin(player);
-            return null;
-        }
-        return packet;
-    }
-
-    [PacketHandler]
-    public Package onInteract(McpeInteract packet,Player player)
-    {
-        if(!Class1.lged.ContainsKey(player.Username.ToLower())){
-            notlogin(player);
-            return null;
-        }
-        return packet;
-    }
-
-    [PacketHandler]
-    public Package onDropItem(McpeDropItem packet, Player player)
-    {
-        if (!Class1.lged.ContainsKey(player.Username.ToLower()))
         {
-            notlogin(player);
-            return null;
+             _log.Info("Event Handler");
         }
-        return packet;
-    }
 
-    [PacketHandler]
-    public Package onCraftingEvent(McpeCraftingEvent packet,Player player)
-    {
-        if(!Class1.lged.ContainsKey(player.Username.ToLower())){
-            notlogin(player);
-            return null;
-        }
-        return packet;
-    }
-
-    [PacketHandler]
-    public Package onContainerOpen(McpeContainerOpen packet, Player player)
-    {
-        if (!Class1.lged.ContainsKey(player.Username.ToLower()))
+        [PacketHandler]
+        public Package onChat(McpeText packet, Player player)
         {
-            notlogin(player);
-            return null;
+            if (!Class1.lged.ContainsKey(player.Username.ToLower()))
+            {
+                notlogin(player);
+                return null;
+            }
+            return packet;
         }
-        return packet;
-    }
 
-    [PacketHandler]
-    public Package onMovePlayer(McpeMovePlayer packet,Player player)
-    {
-        if(!Class1.lged.ContainsKey(player.Username.ToLower())){
-            notlogin(player);
-            return null;
+        [PacketHandler]
+        public Package onUseItem(McpeUseItem packet, Player player)
+        {
+            if (!Class1.lged.ContainsKey(player.Username.ToLower()))
+            {
+                notlogin(player);
+                return null;
+            }
+            return packet;
         }
-        return packet;
-    }
 
-    [PacketHandler]
-    public Package onPlayerAction(McpePlayerAction packet,Player player)
-    {
-        if(!Class1.lged.ContainsKey(player.Username.ToLower())){
-            notlogin(player);
-            return null;
+        [PacketHandler]
+        public Package onInteract(McpeInteract packet, Player player)
+        {
+            if (!Class1.lged.ContainsKey(player.Username.ToLower()))
+            {
+                notlogin(player);
+                return null;
+            }
+            return packet;
         }
-        return packet;
-    }
-   
-    [PacketHandler]
-    public Package onMobArmorEquipment(McpeMobArmorEquipment packet,Player player)
-    {
-        if(!Class1.lged.ContainsKey(player.Username.ToLower())){
-            notlogin(player);
-            return null;
+
+        [PacketHandler]
+        public Package onDropItem(McpeDropItem packet, Player player)
+        {
+            if (!Class1.lged.ContainsKey(player.Username.ToLower()))
+            {
+                notlogin(player);
+                return null;
+            }
+            return packet;
         }
-        return packet;
-    }
+
+        [PacketHandler]
+        public Package onCraftingEvent(McpeCraftingEvent packet, Player player)
+        {
+            if (!Class1.lged.ContainsKey(player.Username.ToLower()))
+            {
+                notlogin(player);
+                return null;
+            }
+            return packet;
+        }
 
 
-    public void OnBreak(object o, BlockBreakEventArgs e)
-    {
-        if(!Class1.lged.ContainsKey(e.Player.Username.ToLower())){
-            notlogin(e.Player);
+        [PacketHandler]
+        public Package onMovePlayer(McpeMovePlayer packet, Player player)
+        {
+            if (!Class1.lged.ContainsKey(player.Username.ToLower()))
+            {
+                notlogin(player);
+                return null;
+            }
+            return packet;
+        }
+
+
+        [PacketHandler]
+        public Package onMobArmorEquipment(McpeMobArmorEquipment packet, Player player)
+        {
+            if (!Class1.lged.ContainsKey(player.Username.ToLower()))
+            {
+                notlogin(player);
+                return null;
+            }
+            return packet;
+        }
+
+        [PacketHandler]
+        public Package onCommandStep(McpeCommandStep packet, Player player)
+        {
+            if (!Class1.lged.ContainsKey(player.Username.ToLower()))
+            {
+                if (!packet.commandName.Equals("register") || packet.commandName.Equals("login"))
+                {
+                    notlogin(player);
+                }
+                return null;
+            }
+            return packet;
+        }
+
+
+        public void OnBreak(object o, BlockBreakEventArgs e)
+        {
+            if (!Class1.lged.ContainsKey(e.Player.Username.ToLower()))
+            {
+                notlogin(e.Player);
                 e.Cancel = true;
+            }
         }
-    }
 
-    
-    public void OnPlace(object o, BlockPlaceEventArgs e)
-       {
-        if(!Class1.lged.ContainsKey(e.Player.Username.ToLower())){
-            notlogin(e.Player);
+
+        public void OnPlace(object o, BlockPlaceEventArgs e)
+        {
+            if (!Class1.lged.ContainsKey(e.Player.Username.ToLower()))
+            {
+                notlogin(e.Player);
                 e.Cancel = true;
+            }
         }
-    }
 
         public void notlogin(Player player)
-    {
-        player.SendMessage("Please Login");
-        player.SendMessage("Please Login", MessageType.Popup);
-    }
+        {
+            player.SendMessage("Please Login", MessageType.Popup);
+        }
 
 
 
