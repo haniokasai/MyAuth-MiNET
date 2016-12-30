@@ -17,8 +17,8 @@ namespace MyAuth
     public class Class1 : Plugin
     {
         public static Dictionary<string, Boolean> lged = new Dictionary<string, Boolean>();
-        Dictionary<string, Boolean> prerg = new Dictionary<string, Boolean>();
-        Dictionary<string, int> ct = new Dictionary<string, int>();
+        public static Dictionary<string, Boolean> prerg = new Dictionary<string, Boolean>();
+        public static Dictionary<string, int> ct = new Dictionary<string, int>();
 
         public static ILog _log = LogManager.GetLogger("MyAuth");
 
@@ -82,7 +82,7 @@ namespace MyAuth
             }
         }
 
-        private string toEn(string value)
+       public static string toEn(string value)
         {
             //http://dobon.net/vb/dotnet/string/md5.html#section3
             //文字列をbyte型配列に変換する
