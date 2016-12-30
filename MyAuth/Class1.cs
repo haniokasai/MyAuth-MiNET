@@ -46,19 +46,62 @@ namespace MyAuth
         private void Player_PlayerLeave(object sender, PlayerEventArgs e)
         {
             Player player = e.Player;
-            if (player == null) throw new ArgumentNullException(nameof(e.Player));
-            player.Level.BroadcastMessage("Bye");
-
+            string name = player.Username.ToLower();
+            ct.Remove(name);
+            lged.Remove(name);
+            prerg.Remove(name);
         }
 
 
         private void Player_PlayerJoin(object sender, PlayerEventArgs e)
         {
             Player player = e.Player;
-            player.Level.BroadcastMessage("Welcome");
+            string name = player.Username.ToLower();
+            String ip = player.EndPoint.Address.MapToIPv4().ToString();
+            String cid = player.ClientUuid.ToString();
+            Dictionary<string, string> map = mysql.get(name);
+            if (!map.ContainsValue(name)) {
+                player.SendMessage("[MyAuth]Please Register your account /register <passwd>");
+                prerg.Add(name, true);
+            }
+            else
+            {
+                var date = DateTimeOffset.FromUnixTimeSeconds(long.Parse(map["llogin"])).ToLocalTime();
+                player.SendMessage("[MyAuth] last login:" + date);
+                var ctime = (int)mysql.ToUnixTime(DateTime.Now.ToUniversalTime());
+                mysql.settime(name, ctime);
+                if (map["ip"].Equals(ip) & map["uuid"].Equals(cid))
+                {
+                    player.SendMessage("[MyAuth]Logined!");
+                    lged.Add(name, true);
+                }
+                else
+                {
+                    player.SendMessage("[MyAuth]Please Login to server /login <passwd>");
+                }
+            }
+        }
+
+        private string toEn(string value)
+        {
+            //http://dobon.net/vb/dotnet/string/md5.html#section3
+            //文字列をbyte型配列に変換する
+            byte[] data = System.Text.Encoding.UTF8.GetBytes(value);
+
+            //MD5CryptoServiceProviderオブジェクトを作成
+            System.Security.Cryptography.SHA512CryptoServiceProvider sha512 =
+                new System.Security.Cryptography.SHA512CryptoServiceProvider();
+
+            //ハッシュ値を計算する
+            byte[] bs = sha512.ComputeHash(data);
+
+            //リソースを解放する
+            sha512.Clear();
+            string result = BitConverter.ToString(bs).ToLower().Replace("-", "");
+            return result;
         }
 
 
 
-    }
+        }
 }
