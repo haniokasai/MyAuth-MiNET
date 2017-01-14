@@ -3,12 +3,8 @@ using MiNET;
 using MiNET.Net;
 using MiNET.Plugins;
 using MiNET.Plugins.Attributes;
-using MyAuth;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyAuth
 {

@@ -2,11 +2,6 @@
 using MiNET.Net;
 using MiNET.Plugins.Attributes;
 using MiNET.Worlds;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyAuth
 {
