@@ -10,8 +10,14 @@ namespace MyAuth
 
         public static void load()
         {
-           con = new MySqlConnection("server=localhost:3333;user=root;password=!hani!@9321!;database=auth;");
-           con.Open();
+           con = new MySqlConnection("server=localhost;Port=3333;user=root;password=!hani!@9321!;database=auth;");
+            try
+            {
+                con.Open();
+            }catch(MySqlException e)
+            {
+                Class1._log.Error(e.Message);
+            }
            using (MySqlCommand command = con.CreateCommand())
            {
                 command.CommandText = "CREATE TABLE IF NOT EXISTS player (name  VARCHAR(25) PRIMARY KEY , passwd  VARCHAR(512), ip VARCHAR(25), uuid VARCHAR(100), flogin  INT, llogin INT)";
@@ -27,6 +33,7 @@ namespace MyAuth
                 //command.CommandText = "CREATE TABLE IF NOT EXISTS op_name (name  VARCHAR(25) PRIMARY KEY , time INT, who VARCHAR(25))";
                 //command.ExecuteNonQuery();
             }
+           
                 Class1._log.Warn("Loaded Mysql.");
         }
 
