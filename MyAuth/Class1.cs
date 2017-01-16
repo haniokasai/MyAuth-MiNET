@@ -23,7 +23,7 @@ namespace MyAuth
             //mysql.load();
             Context.Server.PlayerFactory.PlayerCreated += PlayerFactory_PlayerCreated;
             _log.Warn("Loaded");
-            
+            Context.PluginManager.LoadCommands(new Commands());// /helpを使えるようにする
         }
 
         public override void OnDisable()

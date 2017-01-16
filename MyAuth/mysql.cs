@@ -10,22 +10,22 @@ namespace MyAuth
 
         public static void load()
         {
-           con = new MySqlConnection("server=hoge;user=hoge;password=xxxx;database=hoge;");
+           con = new MySqlConnection("server=localhost:3333;user=root;password=!hani!@9321!;database=auth;");
            con.Open();
            using (MySqlCommand command = con.CreateCommand())
            {
                 command.CommandText = "CREATE TABLE IF NOT EXISTS player (name  VARCHAR(25) PRIMARY KEY , passwd  VARCHAR(512), ip VARCHAR(25), uuid VARCHAR(100), flogin  INT, llogin INT)";
                 command.ExecuteNonQuery();
-                command.CommandText = "CREATE TABLE IF NOT EXISTS ban_names (name  VARCHAR(25) PRIMARY KEY , uuid VARCHAR(100), ip VARCHAR(25), time  INT, who  VARCHAR(25))";
-                command.ExecuteNonQuery();
-                command.CommandText = "CREATE TABLE IF NOT EXISTS ban_ips (ip  VARCHAR(25) PRIMARY KEY , name  VARCHAR(25), uuid VARCHAR(100), time  INT, who  VARCHAR(25))";
-                command.ExecuteNonQuery();
-                command.CommandText = "CREATE TABLE IF NOT EXISTS ban_uuids (uuid  VARCHAR(100) PRIMARY KEY , name  VARCHAR(25), ip VARCHAR(25), time  INT, who  VARCHAR(25))";
-                command.ExecuteNonQuery();
-                command.CommandText = "CREATE TABLE IF NOT EXISTS op_ip (ip  VARCHAR(25) PRIMARY KEY ,  time INT, who VARCHAR(25))";
-                command.ExecuteNonQuery();
-                command.CommandText = "CREATE TABLE IF NOT EXISTS op_name (name  VARCHAR(25) PRIMARY KEY , time INT, who VARCHAR(25))";
-                command.ExecuteNonQuery();
+                //command.CommandText = "CREATE TABLE IF NOT EXISTS ban_names (name  VARCHAR(25) PRIMARY KEY , uuid VARCHAR(100), ip VARCHAR(25), time  INT, who  VARCHAR(25))";
+                //command.ExecuteNonQuery();
+                //command.CommandText = "CREATE TABLE IF NOT EXISTS ban_ips (ip  VARCHAR(25) PRIMARY KEY , name  VARCHAR(25), uuid VARCHAR(100), time  INT, who  VARCHAR(25))";
+                //command.ExecuteNonQuery();
+                //command.CommandText = "CREATE TABLE IF NOT EXISTS ban_uuids (uuid  VARCHAR(100) PRIMARY KEY , name  VARCHAR(25), ip VARCHAR(25), time  INT, who  VARCHAR(25))";
+                //command.ExecuteNonQuery();
+                //command.CommandText = "CREATE TABLE IF NOT EXISTS op_ip (ip  VARCHAR(25) PRIMARY KEY ,  time INT, who VARCHAR(25))";
+                //command.ExecuteNonQuery();
+                //command.CommandText = "CREATE TABLE IF NOT EXISTS op_name (name  VARCHAR(25) PRIMARY KEY , time INT, who VARCHAR(25))";
+                //command.ExecuteNonQuery();
             }
                 Class1._log.Warn("Loaded Mysql.");
         }

@@ -1,10 +1,11 @@
 ﻿using MiNET;
+using MiNET.Plugins;
 using MiNET.Plugins.Attributes;
 using System;
 
 namespace MyAuth
 {
-    class Commands : Class1
+    class Commands : Plugin
     {
         protected override void OnEnable()
         {
@@ -26,8 +27,8 @@ namespace MyAuth
                 {
                     String hashed = Class1.toEn(passwd);
                     mysql.regi(player, hashed);
-                    lged.Add(name, true);
-                    prerg.Remove(name);
+                    Class1.lged.Add(name, true);
+                    Class1.prerg.Remove(name);
                     player.SendMessage("[MyAuth]Registered! Passwd: " + passwd);
                 }
             }
@@ -42,40 +43,40 @@ namespace MyAuth
             string ip = player.EndPoint.Address.MapToIPv4().ToString();
             String uuid = player.ClientUuid.ToString();
 
-            if (lged.ContainsKey(name))
+            if (Class1.lged.ContainsKey(name))
             {
                 player.SendMessage("[MyAuth]You dont have to do it.");
 
             }
             else
             {
-                String hashed = toEn(passwd);
+                String hashed = Class1.toEn(passwd);
                 if (mysql.login(name, hashed))
                 {
-                    lged.Add(name, true);
-                    prerg.Remove(name);
+                    Class1.lged.Add(name, true);
+                    Class1.prerg.Remove(name);
                     mysql.setuuid(name, uuid, ip);
                     player.SendMessage("[MyAuth]Logined!");
 
                 }
                 else
                 {
-                    if (ct.ContainsKey(name))
+                    if (Class1.ct.ContainsKey(name))
                     {
-                        ct.Add(name, ct[name] - 1);
+                        Class1.ct.Add(name, Class1.ct[name] - 1);
                     }
                     else
                     {
-                        ct.Add(name, 10);
+                        Class1.ct.Add(name, 10);
                     }
 
-                    player.SendMessage("[MyAuth]Please enter correct passwd. Remaining : " + ct[name]);
-                    if (ct[name] <= 0)
+                    player.SendMessage("[MyAuth]Please enter correct passwd. Remaining : " + Class1.ct[name]);
+                    if (Class1.ct[name] <= 0)
                     {
                         //Server.getInstance().getIPBans().addBan(ip, "[MyAuth] 10 times passwd missing.", null, "[MyAuth]");
                         
                         player.Level.BroadcastMessage("[MyAuth] " + name + " :missed passwd 10 times.");
-                        ct.Remove(name);
+                        Class1.ct.Remove(name);
                     }
 
                 }
