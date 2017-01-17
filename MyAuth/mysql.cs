@@ -16,7 +16,7 @@ namespace MyAuth
             conn_string.Server = "localhost";
             conn_string.Port = 3306;
             conn_string.Database = "auth";
-            
+
             try
             {
                 con = new MySqlConnection(conn_string.ToString());
@@ -38,12 +38,12 @@ namespace MyAuth
                     command.ExecuteNonQuery();
                 }
             }
-            catch(MySqlException e)
+            catch (MySqlException e)
             {
                 Class1._log.Error(e.Message);
             }
-        
-                Class1._log.Warn("Loaded Mysql.");
+
+            Class1._log.Warn("Loaded Mysql.");
         }
 
         public static void shutdown()
@@ -52,7 +52,7 @@ namespace MyAuth
             Class1._log.Warn("Closed Mysql.");
         }
 
-        public static Dictionary<string,string> get(string name)
+        public static Dictionary<string, string> get(string name)
         {
             Dictionary<string, string> map = new Dictionary<string, string>();
             try
@@ -65,7 +65,7 @@ namespace MyAuth
                     {
                         while (reader.Read())
                         {
-                            map.Add("name",reader["name"].ToString());
+                            map.Add("name", reader["name"].ToString());
                             map.Add("passwd", reader["passwd"].ToString());
                             map.Add("ip", reader["ip"].ToString());
                             map.Add("uuid", reader["uuid"].ToString());
@@ -75,13 +75,13 @@ namespace MyAuth
                         reader.Close();
                     }
                 }
-                
+
             }
-            catch(MySqlException e)
+            catch (MySqlException e)
             {
-                Class1._log.Warn("myauth.get: "+e.Message);
+                Class1._log.Warn("myauth.get: " + e.Message);
             }
-                return map;
+            return map;
         }
 
         public static Boolean settime(String name, int ctime)
@@ -94,7 +94,7 @@ namespace MyAuth
                     {
                         command.Connection = con;
                         command.CommandText = "UPDATE player SET  llogin = '" + ctime + "'  WHERE name = '" + name.ToLower() + "'";
-                            command.ExecuteNonQuery();
+                        command.ExecuteNonQuery();
                     }
                     sqlt.Commit();
                 }
@@ -132,7 +132,7 @@ namespace MyAuth
         }
 
         public static void regi(Player player, string hashed)
-        { 
+        {
             try
             {
                 string r = null;
@@ -150,21 +150,24 @@ namespace MyAuth
                         reader.Close();
                     }
                 }
-
+                Console.Write("0 /n");
                 if (r == null)
                 {
+                    Console.Write("1 /n");
                     using (MySqlTransaction sqlt = con.BeginTransaction())
                     {
-                        using (MySqlCommand command = con.CreateCommand())
+                        using (var command = new MySqlCommand())
                         {
-                            command.CommandText = "INSERT INTO player (name,passwd,ip,cid,flogin,llogin) VALUES ('" + player.Username.ToLower() + "','" + hashed + "','" + player.EndPoint.Address.MapToIPv4().ToString() + "','" + player.ClientUuid.ToString() + "','" + ToUnixTime(DateTime.Now.ToUniversalTime()) + "','" + ToUnixTime(DateTime.Now.ToUniversalTime()) + "');";
+                            command.Connection = con;
+                            command.CommandText = "INSERT INTO player (name,passwd,ip,uuid,flogin,llogin) VALUES ('" + player.Username.ToLower() + "','" + hashed + "','" + player.EndPoint.Address.MapToIPv4().ToString() + "','" + player.ClientUuid.ToString() + "','" + ToUnixTime(DateTime.Now.ToUniversalTime()) + "','" + ToUnixTime(DateTime.Now.ToUniversalTime()) + "');";
                             command.ExecuteNonQuery();
                         }
                         sqlt.Commit();
                     }
+                    Console.Write("2 /n");
                 }
             }
-            catch (MySqlException e)
+            catch (Exception e)
             {
                 Class1._log.Warn("myauth.regi: " + e.Message);
             }
@@ -194,12 +197,13 @@ namespace MyAuth
                 {
                     return false;
                 }
-                if(r.Equals(name.ToLower()))
+                if (r.Equals(name.ToLower()))
                 {
                     using (MySqlTransaction sqlt = con.BeginTransaction())
                     {
-                        using (MySqlCommand command = con.CreateCommand())
+                        using (var command = new MySqlCommand())
                         {
+                            command.Connection = con;
                             command.CommandText = "DELETE  FROM player WHERE name = @name";
                             command.Parameters.Add(new MySqlParameter("name", name.ToLower()));
                             command.ExecuteNonQuery();
@@ -213,6 +217,7 @@ namespace MyAuth
             {
                 Class1._log.Warn("myauth.remove: " + e.Message);
             }
+        
             return false;
         }
 

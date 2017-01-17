@@ -26,9 +26,6 @@ namespace MyAuth
             mysql.load();
             Context.Server.PlayerFactory.PlayerCreated += PlayerFactory_PlayerCreated;
             _log.Warn("Loaded");
-            
-            
-            Context.PluginManager.LoadCommands(new Commands());// /helpを使えるようにする
         }
 
         public override void OnDisable()
@@ -60,6 +57,8 @@ namespace MyAuth
             string name = player.Username.ToLower();
             String ip = player.EndPoint.Address.MapToIPv4().ToString();
             String cid = player.ClientUuid.ToString();
+            player.Level.BlockBreak += OnBreak;
+            player.Level.BlockPlace += OnPlace;
             Dictionary<string, string> map = mysql.get(name);
             if (!map.ContainsValue(name)) {
                 player.SendMessage("[MyAuth]Please Register your account /register <passwd>");
@@ -156,7 +155,7 @@ namespace MyAuth
                 {
                     if (Class1.ct.ContainsKey(name))
                     {
-                        Class1.ct.Add(name, Class1.ct[name] - 1);
+                        Class1.ct.Add(name, Class1.ct[name]--);
                     }
                     else
                     {
@@ -203,14 +202,17 @@ namespace MyAuth
         [Command(Name = "unregister", Description = "UnRegister your account", Permission = "com.haniokasai.myauth.unregister")]
         public void unregister(Player player, string playername, string unregisterpasswd)
         {
-            if (mysql.remove(playername))
+            if (mysql.login(playername, Class1.toEn(unregisterpasswd)))
             {
-                player.SendMessage("[MyAuth]Deleted : " + playername);
+                if (mysql.remove(playername))
+                {
+                    player.SendMessage("[MyAuth]Deleted : " + playername);
+                    return;
+                }
+                
             }
-            else
-            {
                 player.SendMessage("[MyAuth]there isnt such a player : " + playername);
-            }
+           
 
         }
         ///////////////////
@@ -218,18 +220,19 @@ namespace MyAuth
 
 
         ////event////////////
-        [PacketHandler]
+        /*[PacketHandler,Receive]
         public Package onChat(McpeText packet, Player player)
         {
+            Console.Write(1);
             if (!Class1.lged.ContainsKey(player.Username.ToLower()))
             {
                 notlogin(player);
                 return null;
             }
             return packet;
-        }
+        }*/
 
-        [PacketHandler]
+        [PacketHandler, Receive]
         public Package onUseItem(McpeUseItem packet, Player player)
         {
             if (!Class1.lged.ContainsKey(player.Username.ToLower()))
@@ -240,7 +243,7 @@ namespace MyAuth
             return packet;
         }
 
-        [PacketHandler]
+        [PacketHandler, Receive]
         public Package onInteract(McpeInteract packet, Player player)
         {
             if (!Class1.lged.ContainsKey(player.Username.ToLower()))
@@ -251,7 +254,7 @@ namespace MyAuth
             return packet;
         }
 
-        [PacketHandler]
+        [PacketHandler, Receive]
         public Package onDropItem(McpeDropItem packet, Player player)
         {
             if (!Class1.lged.ContainsKey(player.Username.ToLower()))
@@ -262,7 +265,7 @@ namespace MyAuth
             return packet;
         }
 
-        [PacketHandler]
+        [PacketHandler, Receive]
         public Package onCraftingEvent(McpeCraftingEvent packet, Player player)
         {
             if (!Class1.lged.ContainsKey(player.Username.ToLower()))
@@ -274,7 +277,7 @@ namespace MyAuth
         }
 
 
-        [PacketHandler]
+        [PacketHandler, Receive]
         public Package onMovePlayer(McpeMovePlayer packet, Player player)
         {
             if (!Class1.lged.ContainsKey(player.Username.ToLower()))
@@ -286,7 +289,7 @@ namespace MyAuth
         }
 
 
-        [PacketHandler]
+        [PacketHandler, Receive]
         public Package onMobArmorEquipment(McpeMobArmorEquipment packet, Player player)
         {
             if (!Class1.lged.ContainsKey(player.Username.ToLower()))
@@ -297,19 +300,23 @@ namespace MyAuth
             return packet;
         }
 
-        [PacketHandler]
+       /* [PacketHandler, Receive]
         public Package onCommandStep(McpeCommandStep packet, Player player)
         {
+            Console.Write(1);
             if (!Class1.lged.ContainsKey(player.Username.ToLower()))
             {
+                Console.Write(2);
                 if (!packet.commandName.Equals("register") || packet.commandName.Equals("login"))
                 {
+                    Console.Write(3);
                     notlogin(player);
+                    return null;
                 }
-                return null;
             }
+            Console.Write(4);
             return packet;
-        }
+        }*/
 
 
         public void OnBreak(object o, BlockBreakEventArgs e)
