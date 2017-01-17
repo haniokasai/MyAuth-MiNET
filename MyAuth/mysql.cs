@@ -10,30 +10,39 @@ namespace MyAuth
 
         public static void load()
         {
-           con = new MySqlConnection("server=localhost;Port=3333;user=root;password=!hani!@9321!;database=auth;");
+            MySqlConnectionStringBuilder conn_string = new MySqlConnectionStringBuilder();
+            conn_string.UserID = "root";
+            conn_string.Password = "aaaa";
+            conn_string.Server = "localhost";
+            conn_string.Port = 3306;
+            conn_string.Database = "auth";
+            
             try
             {
+                con = new MySqlConnection(conn_string.ToString());
                 con.Open();
-            }catch(MySqlException e)
+                using (var command = new MySqlCommand())
+                {
+                    command.Connection = con;
+                    command.CommandText = "CREATE TABLE IF NOT EXISTS player (name  VARCHAR(25) PRIMARY KEY , passwd  VARCHAR(512), ip VARCHAR(25), uuid VARCHAR(100), flogin  INT, llogin INT)";
+                    command.ExecuteNonQuery();
+                    command.CommandText = "CREATE TABLE IF NOT EXISTS ban_names (name  VARCHAR(25) PRIMARY KEY , uuid VARCHAR(100), ip VARCHAR(25), time  INT, who  VARCHAR(25))";
+                    command.ExecuteNonQuery();
+                    command.CommandText = "CREATE TABLE IF NOT EXISTS ban_ips (ip  VARCHAR(25) PRIMARY KEY , name  VARCHAR(25), uuid VARCHAR(100), time  INT, who  VARCHAR(25))";
+                    command.ExecuteNonQuery();
+                    command.CommandText = "CREATE TABLE IF NOT EXISTS ban_uuids (uuid  VARCHAR(100) PRIMARY KEY , name  VARCHAR(25), ip VARCHAR(25), time  INT, who  VARCHAR(25))";
+                    command.ExecuteNonQuery();
+                    command.CommandText = "CREATE TABLE IF NOT EXISTS op_ip (ip  VARCHAR(25) PRIMARY KEY ,  time INT, who VARCHAR(25))";
+                    command.ExecuteNonQuery();
+                    command.CommandText = "CREATE TABLE IF NOT EXISTS op_name (name  VARCHAR(25) PRIMARY KEY , time INT, who VARCHAR(25))";
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch(MySqlException e)
             {
                 Class1._log.Error(e.Message);
             }
-           using (MySqlCommand command = con.CreateCommand())
-           {
-                command.CommandText = "CREATE TABLE IF NOT EXISTS player (name  VARCHAR(25) PRIMARY KEY , passwd  VARCHAR(512), ip VARCHAR(25), uuid VARCHAR(100), flogin  INT, llogin INT)";
-                command.ExecuteNonQuery();
-                //command.CommandText = "CREATE TABLE IF NOT EXISTS ban_names (name  VARCHAR(25) PRIMARY KEY , uuid VARCHAR(100), ip VARCHAR(25), time  INT, who  VARCHAR(25))";
-                //command.ExecuteNonQuery();
-                //command.CommandText = "CREATE TABLE IF NOT EXISTS ban_ips (ip  VARCHAR(25) PRIMARY KEY , name  VARCHAR(25), uuid VARCHAR(100), time  INT, who  VARCHAR(25))";
-                //command.ExecuteNonQuery();
-                //command.CommandText = "CREATE TABLE IF NOT EXISTS ban_uuids (uuid  VARCHAR(100) PRIMARY KEY , name  VARCHAR(25), ip VARCHAR(25), time  INT, who  VARCHAR(25))";
-                //command.ExecuteNonQuery();
-                //command.CommandText = "CREATE TABLE IF NOT EXISTS op_ip (ip  VARCHAR(25) PRIMARY KEY ,  time INT, who VARCHAR(25))";
-                //command.ExecuteNonQuery();
-                //command.CommandText = "CREATE TABLE IF NOT EXISTS op_name (name  VARCHAR(25) PRIMARY KEY , time INT, who VARCHAR(25))";
-                //command.ExecuteNonQuery();
-            }
-           
+        
                 Class1._log.Warn("Loaded Mysql.");
         }
 
@@ -48,8 +57,9 @@ namespace MyAuth
             Dictionary<string, string> map = new Dictionary<string, string>();
             try
             {
-                using (MySqlCommand command = con.CreateCommand())
+                using (var command = new MySqlCommand())
                 {
+                    command.Connection = con;
                     command.CommandText = "SELECT * FROM player WHERE name = '" + name.ToLower() + "'";
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -80,9 +90,10 @@ namespace MyAuth
             {
                 using (MySqlTransaction sqlt = con.BeginTransaction())
                 {
-                    using (MySqlCommand command = con.CreateCommand())
+                    using (var command = new MySqlCommand())
                     {
-                            command.CommandText = "UPDATE player SET  llogin = '" + ctime + "'  WHERE name = '" + name.ToLower() + "'";
+                        command.Connection = con;
+                        command.CommandText = "UPDATE player SET  llogin = '" + ctime + "'  WHERE name = '" + name.ToLower() + "'";
                             command.ExecuteNonQuery();
                     }
                     sqlt.Commit();
@@ -102,8 +113,9 @@ namespace MyAuth
             {
                 using (MySqlTransaction sqlt = con.BeginTransaction())
                 {
-                    using (MySqlCommand command = con.CreateCommand())
+                    using (var command = new MySqlCommand())
                     {
+                        command.Connection = con;
                         command.CommandText = "UPDATE player SET  uuid = '" + uuid + "' ,ip = '" + ip + "'   WHERE name = '" + name.ToLower() + "'";
                         command.ExecuteNonQuery();
                     }
@@ -124,8 +136,9 @@ namespace MyAuth
             try
             {
                 string r = null;
-                using (MySqlCommand command = con.CreateCommand())
+                using (var command = new MySqlCommand())
                 {
+                    command.Connection = con;
                     command.CommandText = "SELECT name FROM player WHERE name = '" + player.Username.ToLower() + "'";
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -162,8 +175,9 @@ namespace MyAuth
             try
             {
                 string r = null;
-                using (MySqlCommand command = con.CreateCommand())
+                using (var command = new MySqlCommand())
                 {
+                    command.Connection = con;
                     command.CommandText = "SELECT name FROM player WHERE name = @name";
                     command.Parameters.Add(new MySqlParameter("name", name.ToLower()));
                     using (MySqlDataReader reader = command.ExecuteReader())
@@ -208,8 +222,9 @@ namespace MyAuth
             string p = null;
             try
             {
-                using (MySqlCommand command = con.CreateCommand())
+                using (var command = new MySqlCommand())
                 {
+                    command.Connection = con;
                     command.CommandText = "SELECT passwd FROM player WHERE name = '" + name.ToLower() + "'";
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {

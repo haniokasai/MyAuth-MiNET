@@ -4,6 +4,7 @@ using MiNET.Net;
 using MiNET.Plugins;
 using MiNET.Plugins.Attributes;
 using MiNET.Worlds;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 
@@ -22,9 +23,11 @@ namespace MyAuth
         protected override void OnEnable()
         {
             //mysql.load();
+            mysql.load();
             Context.Server.PlayerFactory.PlayerCreated += PlayerFactory_PlayerCreated;
             _log.Warn("Loaded");
-            mysql.load();
+            
+            
             Context.PluginManager.LoadCommands(new Commands());// /helpを使えるようにする
         }
 
